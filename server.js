@@ -757,7 +757,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-server.listen(PORT, 0.0.0.0, () => {
+server.listen(PORT, () => {
   console.log(`
     🚀 Server running on ://0.0.0.0:${PORT}
     📡 Socket.IO: ws://0.0.0.0:${PORT}/socket.io/
