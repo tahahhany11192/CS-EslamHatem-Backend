@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for cs-eslamhatem-backend-2dq6da on 2025-09-02T18:24:06Z
+# fly.toml app configuration file generated for cs-eslamhatem-backend-whflvw on 2025-09-02T19:41:31Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'cs-eslamhatem-backend-2dq6da'
+app = 'cs-eslamhatem-backend-whflvw'
 primary_region = 'cdg'
 
 [build]
