@@ -14,8 +14,8 @@ const ChatRoom = require('./models/ChatRoom');
 const searchRoutes = require("./routes/searchRoutes");
 
 // Configuration
-const PORT = process.env.PORT || 3000;
-const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'http://127.0.0.1:51699';
+const PORT = process.env.PORT || 8080;
+const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || ' https://tahahhany11192.github.io/CS-EslamHatem-Frontend';
 const MONGO_URI = process.env.MONGO_URI || '*';
 
 // Initialize Server
@@ -25,7 +25,7 @@ const server = http.createServer(app);
 // Enhanced Socket.IO Configuration
 const io = new Server(server, {
   cors: {
-    origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:51699'],
+    origin: [FRONTEND_ORIGIN, ' https://tahahhany11192.github.io/CS-EslamHatem-Frontend'],
     methods: ["GET", "POST"],
     credentials: true
   },
@@ -44,7 +44,7 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:51699'],
+  origin: [FRONTEND_ORIGIN, ' https://tahahhany11192.github.io/CS-EslamHatem-Frontend'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -757,12 +757,12 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-server.listen(PORT, () => {
+server.listen(PORT, 0.0.0.0, () => {
   console.log(`
-    🚀 Server running on http://localhost:${PORT}
-    📡 Socket.IO: ws://localhost:${PORT}/socket.io/
-    🎮 PeerJS: http://localhost:${PORT}/peerjs
-    💬 Chat: ws://localhost:${PORT}
+    🚀 Server running on ://0.0.0.0:${PORT}
+    📡 Socket.IO: ws://0.0.0.0:${PORT}/socket.io/
+    🎮 PeerJS: ://0.0.0.0:${PORT}/peerjs
+    💬 Chat: ws://0.0.0.0:${PORT}
     🌐 CORS Origin: ${FRONTEND_ORIGIN}
     🏫 Active rooms: ${Object.keys(activeRooms).length}
   `);
