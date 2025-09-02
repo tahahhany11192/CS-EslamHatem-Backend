@@ -14,7 +14,7 @@ const ChatRoom = require('./models/ChatRoom');
 const searchRoutes = require("./routes/searchRoutes");
 
 // Configuration
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'https://tahahhany11192.github.io/CS-EslamHatem-Frontend';
 const MONGO_URI = process.env.MONGO_URI || '*';
 
