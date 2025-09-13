@@ -15,17 +15,24 @@ const searchRoutes = require("./routes/searchRoutes");
 
 // Configuration
 const PORT = process.env.PORT || 3000;
-const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'http://127.0.0.1:51699';
+const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'http://127.0.0.1:54235';
 const MONGO_URI = process.env.MONGO_URI || '*';
 
 // Initialize Server
 const app = express();
 const server = http.createServer(app);
+const mediasoupSrv = require('./server-mediasoup');
+
+(async () => {
+  await mediasoupSrv.createWorker();
+  mediasoupSrv.setupSocketSignaling(io);
+})();
+
 
 // Enhanced Socket.IO Configuration
 const io = new Server(server, {
   cors: {
-    origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:51699'],
+    origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:54235'],
     methods: ["GET", "POST"],
     credentials: true
   },
@@ -44,7 +51,7 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:51699'],
+  origin: [FRONTEND_ORIGIN, 'http://127.0.0.1:54235'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -686,6 +693,20 @@ app.use('/api/chat', require("./routes/chatRoutes"));
 app.use('/api/help', require("./routes/helpRoutes"));
 app.use('/api/quizzes', require("./routes/quizRoutes"));
 
+
+
+app.get('/api/live/router-rtp-capabilities', async (req, res) => {
+  try {
+    const roomId = req.query.roomId;
+    const router = require('./server-mediasoup').ensureRouter(roomId);
+    // ensureRouter returns a promise; if no router exists yet, it will create one
+    const rtpcaps = (await router).rtpCapabilities;
+    res.json({ ok: true, routerRtpCapabilities: rtpcaps });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: err.message });
+  }
+});
 
 // Active rooms endpoint
 app.get('/api/active-rooms', (req, res) => {
