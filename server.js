@@ -14,20 +14,13 @@ const ChatRoom = require('./models/ChatRoom');
 const searchRoutes = require("./routes/searchRoutes");
 
 // Configuration
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'https://www.cs-islamhatem.com';
 const MONGO_URI = process.env.MONGO_URI || '*';
 
 // Initialize Server
 const app = express();
 const server = http.createServer(app);
-const mediasoupSrv = require('./server-mediasoup');
-
-(async () => {
-  await mediasoupSrv.createWorker();
-  mediasoupSrv.setupSocketSignaling(io);
-})();
-
 
 // Enhanced Socket.IO Configuration
 const io = new Server(server, {
@@ -694,20 +687,6 @@ app.use('/api/help', require("./routes/helpRoutes"));
 app.use('/api/quizzes', require("./routes/quizRoutes"));
 
 
-
-app.get('/api/live/router-rtp-capabilities', async (req, res) => {
-  try {
-    const roomId = req.query.roomId;
-    const router = require('./server-mediasoup').ensureRouter(roomId);
-    // ensureRouter returns a promise; if no router exists yet, it will create one
-    const rtpcaps = (await router).rtpCapabilities;
-    res.json({ ok: true, routerRtpCapabilities: rtpcaps });
-  } catch (err) {
-    console.error(err);
-    res.json({ ok: false, error: err.message });
-  }
-});
-
 // Active rooms endpoint
 app.get('/api/active-rooms', (req, res) => {
   res.json({
@@ -778,11 +757,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-server.listen(PORT, 0.0.0.0,() => {
+server.listen(PORT, () => {
   console.log(`
-    🚀 Server running on http://0.0.0.0:${PORT}
+    🚀 Server running on ://0.0.0.0:${PORT}
     📡 Socket.IO: ws://0.0.0.0:${PORT}/socket.io/
-    🎮 PeerJS: http://0.0.0.0:${PORT}/peerjs
+    🎮 PeerJS: ://0.0.0.0:${PORT}/peerjs
     💬 Chat: ws://0.0.0.0:${PORT}
     🌐 CORS Origin: ${FRONTEND_ORIGIN}
     🏫 Active rooms: ${Object.keys(activeRooms).length}
@@ -799,7 +778,6 @@ process.on('SIGTERM', () => {
     });
   });
 });
-
 
 
 
