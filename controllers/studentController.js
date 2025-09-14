@@ -245,6 +245,7 @@ exports.submitAssignment = async (req, res) => {
    ❓ Quizzes
 ======================== */
 
+
 exports.getMyQuizzes = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
@@ -261,27 +262,34 @@ exports.getMyQuizzes = async (req, res) => {
 
     const attemptsMap = {};
     attempts.forEach(a => {
-      attemptsMap[a.quiz._id] = a;
+      if (a.quiz) { // Add null check
+        attemptsMap[a.quiz._id] = a;
+      }
     });
 
     let quizzes = [];
     user.paidCourses.forEach(course => {
-      course.Quiz.forEach(q => {
-        const attempt = attemptsMap[q._id] || null;
-        quizzes.push({
-          quizId: q._id,
-          title: q.title,
-          description: q.description,
-          type: q.examType,
-          examType: q.examType,   // ✅ ensure examType sen
-          duration: q.duration,
-          attempted: !!attempt,
-          submittedAt: attempt ? attempt.createdAt : null,
-          score: attempt ? attempt.score : null,
-          feedback: attempt ? attempt.feedback : null,
-          reviewedAt: attempt ? attempt.reviewedAt : null,
+      // Add null/undefined checks
+      if (course && course.Quiz && Array.isArray(course.Quiz)) {
+        course.Quiz.forEach(q => {
+          if (q) { // Check if quiz exists
+            const attempt = attemptsMap[q._id] || null;
+            quizzes.push({
+              quizId: q._id,
+              title: q.title,
+              description: q.description,
+              type: q.examType,
+              examType: q.examType,
+              duration: q.duration,
+              attempted: !!attempt,
+              submittedAt: attempt ? attempt.createdAt : null,
+              score: attempt ? attempt.score : null,
+              feedback: attempt ? attempt.feedback : null,
+              reviewedAt: attempt ? attempt.reviewedAt : null,
+            });
+          }
         });
-      });
+      }
     });
 
     res.json({ success: true, data: quizzes });
@@ -290,6 +298,7 @@ exports.getMyQuizzes = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 
 exports.getQuiz = async (req, res) => {
