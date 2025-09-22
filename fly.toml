@@ -26,10 +26,10 @@ primary_region = 'cdg'
     max_request_body_size = 10737418240 # 10GB in bytes
 
 [[vm]]
-  memory = '1gb'
+  memory = '3gb'
   cpu_kind = 'shared'
-  cpus = 1
-  memory_mb = 1024
+  cpus = 4
+  memory_mb = 3024
 
 [mounts]
   source = "uploads_data_100gb"
