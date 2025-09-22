@@ -63,8 +63,8 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '1000mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1000mb' }));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
