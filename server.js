@@ -56,6 +56,12 @@ app.use((req, res, next) => {
   next();
 });
 
+const upload = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 1024 } // 1 GB
+});
+
+
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 1000,
