@@ -12,10 +12,18 @@ primary_region = 'cdg'
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = false
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
+
+   [http_service.concurrency]
+    type = "connections"
+    hard_limit = 500
+    soft_limit = 400
+
+  [http_service.http_options]
+    max_request_body_size = 10737418240 # 10GB in bytes
 
 [[vm]]
   memory = '1gb'
