@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 
 const upload = multer({
   storage,
-  limits: { fileSize: 1024 * 1024 * 1024 } // 1 GB
+  limits: { fileSize: 10 * 1024 * 1024 * 1024 } // 10 GB in bytes
 });
 
 
@@ -69,8 +69,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use(express.json({ limit: '1000mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1000mb' }));
+app.use(express.json({ limit: '10gb' }));
+app.use(express.urlencoded({ limit: '10gb', extended: true }));
+
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
