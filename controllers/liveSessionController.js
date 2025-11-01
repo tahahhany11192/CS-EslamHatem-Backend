@@ -3,7 +3,55 @@ const LiveTask = require('../models/LiveTask');
 const Course = require('../models/Course');
 const LiveSession = require("../models/LiveSession");
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
+exports.getUserLiveSessions = async (req, res) => {
+  console.log("✅ Hit /my-live-sessions route");
+
+  try {
+    console.log("🔍 req.user =", req.user);
+
+    if (!req.user) {
+      console.log("❌ req.user is undefined — authentication failed.");
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    // ✅ FIX: correct field name
+    const userId = req.user.userId;
+    console.log("✅ Extracted userId =", userId);
+
+    console.log("🔍 Looking up user in DB...");
+    const user = await User.findById(userId).populate("paidCourses");
+
+    console.log("✅ DB user =", user);
+
+    if (!user) {
+      console.log("❌ User not found in DB");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("✅ User paidCourses =", user.paidCourses);
+
+    console.log("🔍 Finding sessions...");
+    const sessions = await LiveSession.find({
+      course: { $in: user.paidCourses }
+    }).populate("course");
+
+    console.log("✅ Found sessions =", sessions);
+
+    return res.json({ sessions });
+
+  } catch (err) {
+    console.log("❌ ERROR in getUserLiveSessions()");
+    console.error(err);
+
+    return res.status(500).json({
+      message: "Server error",
+      error: err.message,
+      stack: err.stack
+    });
+  }
+};
 // Start live session
 exports.startSession = async (req, res) => {
   try {
