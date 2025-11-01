@@ -25,7 +25,7 @@ const {
   uploadQuizAnswer,
   getUserQuizAttempt
 } = require("../controllers/studentController");
-
+const { getUserLiveSessions } = require("../controllers/liveSessionController");
 // ================= Multer setup =================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -77,6 +77,8 @@ router.post(
 router.get("/:quizId/attempt", authenticate, getUserQuizAttempt);
 /* 🎥 Live Sessions */
 router.get("/sessions", authenticate, getLiveSessions);
+router.get("/my-live-sessions", authenticate, getUserLiveSessions);
+
 
 /* 💻 Compiler */
 router.get("/compiler", authenticate, getCompilerAccess);
