@@ -119,6 +119,44 @@ router.get("/assignments", authenticateAdmin, listAssignments);
 router.put("/assignments/:id", authenticateAdmin, upload.single("pdf"), updateAssignment);
 router.delete("/assignments/:id", authenticateAdmin, deleteAssignment);
 router.get("/assignments/submissions", authenticateAdmin, listSubmissions);
+router.delete("/assignments/submissions/:id", authenticateAdmin, async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+    
+    // Find and delete the submission
+    const deletedSubmission = await AssignmentSubmission.findByIdAndDelete(submissionId);
+    
+    if (!deletedSubmission) {
+      return res.status(404).json({
+        success: false,
+        message: 'Submission not found'
+      });
+    }
+    
+    // Optionally, you might want to delete the uploaded file
+    // if (deletedSubmission.fileUrl) {
+    //   // Delete file from storage
+    //   const filePath = path.join(__dirname, '..', 'uploads', deletedSubmission.fileUrl);
+    //   if (fs.existsSync(filePath)) {
+    //     fs.unlinkSync(filePath);
+    //   }
+    // }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Submission deleted successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error deleting submission:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deleting submission',
+      error: error.message
+    });
+  }
+});
+
 router.put("/assignments/submissions/:id/review", authenticateAdmin, reviewSubmission);
 router.put("/assignments/submissions/:id/grade", authenticateAdmin, gradeAssignment);
 
