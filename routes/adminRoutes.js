@@ -124,7 +124,7 @@ router.delete("/assignments/submissions/:id", authenticateAdmin, async (req, res
     const submissionId = req.params.id;
     
     // Find and delete the submission
-    const deletedSubmission = await AssignmentSubmission.findByIdAndDelete(submissionId);
+    const deletedSubmission = await Submission.findByIdAndDelete(submissionId);
     
     if (!deletedSubmission) {
       return res.status(404).json({
